@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cabinet Price Calculator</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <h1>Cabinet Price Calculator</h1>
+  <section>
+    <p>What finish do you want for the cabinet?</p>
+    <select id="finishDropdown">
+        <option value="laminate">Laminate</option>
+        <option value="twopac">2Pack</option>
+        <option value="both">Both</option>
+    </select>
+    <p id="selectedValue"></p>
+  </section>
+  <div id="additional-inputs-container"></div> <!-- Placeholder for additional inputs -->
+  <section id="original-inputs">
+    <p>What is the horizontal length of the area that you want to put the cabinet in meters?</p>
+    <input type="number" id="length" />
+    <p>How many towers do you have in your plan?</p>
+    <input type="number" id="towers" />
+    <div id="tower-width-container"></div>
+    <p>How many drawers do you have in your plan?</p>
+    <input type="number" id="drawers" />
+  </section>
+  <button id="calculate-price">Calculate Price</button>
+  <h3 id="price"></h3>
+
+  <button id="priceDetails">Show Details</button>
+  <div id="details-container"></div>
+
+  <script src="index.js"></script>
+</body>
+</html>
