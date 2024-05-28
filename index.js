@@ -390,6 +390,7 @@ function calculateIndividualPrice(length, towers, tower_width, drawers, isTwoPac
 }
 
 let isTwoPac = false;
+let showDetail = false;
 
 
 function showDetailsFunction() {
@@ -517,8 +518,10 @@ document.getElementById('calculate-price').addEventListener('click', () => {
 
     price = calculateMelaminePrice(length, hingeNumber, handleNumber, colorboard, drawers, hasSubs)
 
-    detailsHtml = showDetailsFunction();
-    document.getElementById('details-container').innerHTML = detailsHtml;
+    if (showDetail) {
+      detailsHtml = showDetailsFunction();
+      document.getElementById('details-container').innerHTML = detailsHtml;
+    }
 
   }
   else if (finish == 'laminate') {
@@ -537,8 +540,10 @@ document.getElementById('calculate-price').addEventListener('click', () => {
 
     price = calculateIndividualPrice(length, towers, towerWidth, drawers, false);
 
-    detailsHtml = showDetailsFunction();
-    document.getElementById('details-container').innerHTML = detailsHtml;
+    if (showDetail) {
+      detailsHtml = showDetailsFunction();
+      document.getElementById('details-container').innerHTML = detailsHtml;
+    }
 
   } else if (finish == 'twopac') {
 
@@ -556,8 +561,10 @@ document.getElementById('calculate-price').addEventListener('click', () => {
 
     price = calculateIndividualPrice(length, towers, towerWidth, drawers, true);
 
-    detailsHtml = showDetailsFunction();
-    document.getElementById('details-container').innerHTML = detailsHtml;
+    if (showDetail) {
+      detailsHtml = showDetailsFunction();
+      document.getElementById('details-container').innerHTML = detailsHtml;
+    }
 
   } else if (finish == 'both') {
 
@@ -586,9 +593,10 @@ document.getElementById('calculate-price').addEventListener('click', () => {
       twopac_length, twopac_towers, twopac_tower_width, twopac_drawers
     );
 
-    detailsHtml = showDetailsFunction();
-    document.getElementById('details-container').innerHTML = detailsHtml;
-
+    if (showDetail) {
+      detailsHtml = showDetailsFunction();
+      document.getElementById('details-container').innerHTML = detailsHtml;
+    }
   }
   
   document.getElementById("reset-container").innerHTML = `<button id="reset-button">Reset Page</button>`
@@ -607,6 +615,7 @@ document.getElementById('calculate-price').addEventListener('click', () => {
 
 
 document.getElementById('priceDetails').addEventListener('click', () => {
+  showDetail = true;
 
   detailsHtml = showDetailsFunction();
 
