@@ -29,6 +29,7 @@ document.getElementById('finishDropdown').addEventListener('change', () => {
   const finish = document.getElementById('finishDropdown').value;
   const additionalInputsContainer = document.getElementById('additional-inputs-container');
   const originalInputs = document.getElementById('original-inputs');
+  
 
   if (finish === 'both') {
     originalInputs.style.display = 'none';
@@ -37,9 +38,6 @@ document.getElementById('finishDropdown').addEventListener('change', () => {
         <h2>Laminate Section</h2>
         <p>What is the horizontal length of the area that you want to put the laminate cabinet in meters?</p>
         <input type="number" id="laminate-length" />
-        <p>How many laminate towers do you have in your plan?</p>
-        <input type="number" id="laminate-towers" />
-        <div id="laminate-tower-width-container"></div>
         <p>How many laminate drawers do you have in your plan?</p>
         <input type="number" id="laminate-drawers" />
       </section>
@@ -47,45 +45,10 @@ document.getElementById('finishDropdown').addEventListener('change', () => {
         <h2>2Pack Section</h2>
         <p>What is the horizontal length of the area that you want to put the 2Pack cabinet in meters?</p>
         <input type="number" id="twopac-length" />
-        <p>How many 2Pack towers do you have in your plan?</p>
-        <input type="number" id="twopac-towers" />
-        <div id="twopac-tower-width-container"></div>
         <p>How many 2Pack drawers do you have in your plan?</p>
         <input type="number" id="twopac-drawers" />
       </section>
     `;
-    
-    document.getElementById('laminate-towers').addEventListener('input', () => {
-      const towers = parseInt(document.getElementById('laminate-towers').value);
-      const towerWidthContainer = document.getElementById('laminate-tower-width-container');
-    
-      if (towers > 0) {
-        towerWidthContainer.innerHTML = `
-          <p>How much is the width of each laminate tower in meters?</p>
-          <input type="number" id="laminate-tower-width" />
-        `;
-        towerWidthContainer.classList.add('show');
-      } else {
-        towerWidthContainer.innerHTML = '';
-        towerWidthContainer.classList.remove('show');
-      }
-    });
-
-    document.getElementById('twopac-towers').addEventListener('input', () => {
-      const towers = parseInt(document.getElementById('twopac-towers').value);
-      const towerWidthContainer = document.getElementById('twopac-tower-width-container');
-    
-      if (towers > 0) {
-        towerWidthContainer.innerHTML = `
-          <p>How much is the width of each 2Pack tower in meters?</p>
-          <input type="number" id="twopac-tower-width" />
-        `;
-        towerWidthContainer.classList.add('show');
-      } else {
-        towerWidthContainer.innerHTML = '';
-        towerWidthContainer.classList.remove('show');
-      }
-    });
   } 
   else if (finish === 'melamine-carcass') 
   {
@@ -107,7 +70,6 @@ document.getElementById('finishDropdown').addEventListener('change', () => {
           <option value="sub-no">No</option>
           <option value="sub-yes">Yes</option>
         </select>
-      </section>
     `;
   }
   else 
@@ -117,32 +79,12 @@ document.getElementById('finishDropdown').addEventListener('change', () => {
   }
 });
 
-document.getElementById('towers').addEventListener('input', () => {
-  const towers = parseInt(document.getElementById('towers').value);
-  const towerWidthContainer = document.getElementById('tower-width-container');
-
-  if (towers > 0) {
-    towerWidthContainer.innerHTML = `
-      <p>How much is the width of each tower in meters?</p>
-      <input type="number" id="tower-width" />
-    `;
-    towerWidthContainer.classList.add('show');
-  } else {
-    towerWidthContainer.innerHTML = '';
-    towerWidthContainer.classList.remove('show');
-  }
-});
-
-
-
-
-
 
 
 let priceDetails = {}; // Object to store price details
 let numberDetails = {};
 
-function calculateMelaminePrice(melamine_length, hinge_number, handle_number, colorboard, melamine_drawers, hasSubs) {
+function calculateMelaminePrice(melamine_length, hinge_number, handle_number, colorboard, melamine_drawers, hasSubs, hasAccessories) {
 
   let initialPrice = 0;
 
@@ -150,7 +92,7 @@ function calculateMelaminePrice(melamine_length, hinge_number, handle_number, co
   const PRICE_OF_HINGES = Math.ceil(hinge_number * HINGE_PRICE);
   const PRICE_OF_HANDLES = Math.ceil(handle_number * HANDLE_PRICE);
   const PRICE_OF_COLORBOARD = Math.ceil(colorboard * COLORBOARD_PRICE);
-  const PRICE_OF_CARCASS = Math.ceil((CARCASS_PER_METER * melamine_length) * CARCASS_BOARD_PRICE);
+  const PRICE_OF_CARCASS = Math.ceil((CARCASS_PER_METER) * melamine_length) * CARCASS_BOARD_PRICE;
   let PRICE_OF_SUB = 0;
   let NUMBER_OF_SUB = 0;
   if (hasSubs) 
@@ -158,7 +100,12 @@ function calculateMelaminePrice(melamine_length, hinge_number, handle_number, co
     PRICE_OF_SUB = Math.ceil(SUB_PER_METER * melamine_length) * SUB_PRICE
     NUMBER_OF_SUB = Math.ceil(SUB_PER_METER * melamine_length)
   }
-    
+  else {
+    NUMBER_OF_SUB = ''
+  }
+   
+  
+
   let DELIVERY_PRICE;
   if ( melamine_length == 0 ) {
     DELIVERY_PRICE = 0 
@@ -169,12 +116,12 @@ function calculateMelaminePrice(melamine_length, hinge_number, handle_number, co
     }
   } 
   
-  let DESIGN_PRICE;
-  if ( melamine_length == 0 ) {
-    DESIGN_PRICE = 0 
-  } else {
-    DESIGN_PRICE = 100
-  }
+  // let DESIGN_PRICE;
+  // if ( melamine_length == 0 ) {
+  //   DESIGN_PRICE = 0 
+  // } else {
+  //   DESIGN_PRICE = 100
+  // }
 
   initialPrice += PRICE_OF_SUB + PRICE_OF_CARCASS + PRICE_OF_COLORBOARD + PRICE_OF_HANDLES + PRICE_OF_HINGES +  DELIVERY_PRICE +
     (NUMBER_OF_CABINETS_MELAMINE * ASSEMBLE_PRICE_PER_CABINET) + (NUMBER_OF_CABINETS_MELAMINE * INSTALLATION_PRICE_PER_CABINET) + DESIGN_PRICE + (melamine_drawers * DRAWER_PRICE);
@@ -190,9 +137,9 @@ function calculateMelaminePrice(melamine_length, hinge_number, handle_number, co
       hingeNumber: hinge_number,
       handleNumber: handle_number,
       drawerNumber: melamine_drawers,
-      subNumber: Math.ceil(NUMBER_OF_SUB),
+      subNumber: NUMBER_OF_SUB,
       carcassNumber: Math.ceil(CARCASS_PER_METER * melamine_length),
-      colorboardNumber: Math.ceil(COLORBOARD_PER_METER * melamine_length)
+      colorboardNumber: (colorboard == 0 || colorboard == '') ? '' : Math.ceil(COLORBOARD_PER_METER * melamine_length)
     }
   }
 
@@ -204,7 +151,9 @@ function calculateMelaminePrice(melamine_length, hinge_number, handle_number, co
       carcassPrice: Math.ceil(PRICE_OF_CARCASS),
       colorboardPrice: Math.ceil(PRICE_OF_COLORBOARD),
       drawerPrice: Math.ceil(melamine_drawers * DRAWER_PRICE),
-      subPrice: SUB_PRICE,
+      subPrice: PRICE_OF_SUB,
+      deliveryPrice: DELIVERY_PRICE,
+      designPrice: DESIGN_PRICE, 
       assemblePrice: Math.ceil(NUMBER_OF_CABINETS_MELAMINE * ASSEMBLE_PRICE_PER_CABINET),
       installationPrice: Math.ceil(NUMBER_OF_CABINETS_MELAMINE * INSTALLATION_PRICE_PER_CABINET),
       maintainenceCost: Math.ceil(MAINTAINENCE_COST_PERCENT * initialPrice),
@@ -221,7 +170,7 @@ function calculateMelaminePrice(melamine_length, hinge_number, handle_number, co
 }
 
 
-function calculateBothPrice(laminate_length, laminate_towers, laminate_tower_width, laminate_drawers, twopac_length, twopac_towers, twopac_tower_width, twopac_drawers) {
+function calculateBothPrice(laminate_length, laminate_drawers, twopac_length, twopac_drawers) {
 
   let laminatePrice = 0;
   let twopacPrice = 0;
@@ -240,7 +189,8 @@ function calculateBothPrice(laminate_length, laminate_towers, laminate_tower_wid
   const PRICE_OF_CARCASS_TWOPAC = Math.ceil(CARCASS_PER_METER * twopac_length) * CARCASS_BOARD_PRICE;
   const PRICE_OF_COLORBOARD_TWOPAC = Math.ceil(COLORBOARD_PER_METER * twopac_length) * SATINBOARD_PRICE;
   const PRICE_OF_PAINT = Math.ceil(((twopac_length * COLORBOARD_PER_METER)*1.2) * BOARD_CUBIC_METER * PAINT_PRICE_PER_CUBIC_METER);
-
+  const PAINT_RELATED_COST = 400 + Math.ceil(PRICE_OF_PAINT * 0.3);
+  
   let DELIVERY_PRICE;
   if ((NUMBER_OF_CABINETS_LAMINATE + NUMBER_OF_CABINETS_TWOPAC) <= 20) {
     DELIVERY_PRICE = 400;
@@ -254,7 +204,7 @@ function calculateBothPrice(laminate_length, laminate_towers, laminate_tower_wid
 
   twopacPrice += PRICE_OF_CARCASS_TWOPAC + PRICE_OF_COLORBOARD_TWOPAC + PRICE_OF_HANDLES_TWOPAC + PRICE_OF_HINGES_TWOPAC + PRICE_OF_SUB_TWOPAC +
     (NUMBER_OF_CABINETS_TWOPAC * ASSEMBLE_PRICE_PER_CABINET) + (NUMBER_OF_CABINETS_TWOPAC * INSTALLATION_PRICE_PER_CABINET) + (twopac_drawers * DRAWER_PRICE) +
-    PRICE_OF_PAINT;
+    PRICE_OF_PAINT + PAINT_RELATED_COST;
 
   let initialPrice = laminatePrice + twopacPrice + DESIGN_PRICE + DELIVERY_PRICE;
 
@@ -273,21 +223,25 @@ function calculateBothPrice(laminate_length, laminate_towers, laminate_tower_wid
       subNumber: Math.ceil(SUB_PER_METER * laminate_length),
       carcassNumber: Math.ceil(CARCASS_PER_METER * laminate_length),
       colorboardNumber: Math.ceil(COLORBOARD_PER_METER * laminate_length),
-      installationPrice: (NUMBER_OF_CABINETS_LAMINATE * ASSEMBLE_PRICE_PER_CABINET),
-      assemblePrice: (NUMBER_OF_CABINETS_LAMINATE * ASSEMBLE_PRICE_PER_CABINET)
     },
 
     twopac: {
-      cabinetNumber: Math.ceil(NUMBER_OF_CABINETS_TWOPAC),
-      hingeNumber: Math.ceil(HINGES_PER_METER * twopac_length),
-      handleNumber: Math.ceil(HANDLE_PER_METER * twopac_length),
-      subNumber: Math.ceil(SUB_PER_METER * twopac_length),
-      carcassNumber: Math.ceil(CARCASS_PER_METER * twopac_length),
+      cabinetNumberTwopac: Math.ceil(NUMBER_OF_CABINETS_TWOPAC),
+      hingeNumberTwopac: Math.ceil(HINGES_PER_METER * twopac_length),
+      handleNumberTwopac: Math.ceil(HANDLE_PER_METER * twopac_length),
+      subNumberTwopac: Math.ceil(SUB_PER_METER * twopac_length),
+      carcassNumberTwopac: Math.ceil(CARCASS_PER_METER * twopac_length),
       satinboardNumber: Math.ceil(COLORBOARD_PER_METER * twopac_length),
       satinboardCubicMeter: Math.ceil(((twopac_length * COLORBOARD_PER_METER)*1.2) * BOARD_CUBIC_METER),
-      installationPrice: (NUMBER_OF_CABINETS_TWOPAC * ASSEMBLE_PRICE_PER_CABINET),
-      assemblePrice: (NUMBER_OF_CABINETS_TWOPAC * ASSEMBLE_PRICE_PER_CABINET)
     }
+  }
+
+  totalNumber = {
+    totalCabinetNumber: numberDetails.laminate.cabinetNumber + numberDetails.twopac.cabinetNumberTwopac,
+    totalHingeNumber: numberDetails.laminate.hingeNumber + numberDetails.twopac.hingeNumberTwopac,
+    totalHandleNumber: numberDetails.laminate.handleNumber + numberDetails.twopac.handleNumberTwopac,
+    totalSubNumber: numberDetails.laminate.subNumber + numberDetails.twopac.subNumberTwopac,
+    totalCarcassNumber: numberDetails.laminate.carcassNumber + numberDetails.twopac.carcassNumberTwopac,
   }
 
   // Store price details
@@ -306,7 +260,24 @@ function calculateBothPrice(laminate_length, laminate_towers, laminate_tower_wid
       satinBoardPrice: Math.ceil(PRICE_OF_COLORBOARD_TWOPAC),
       subPrice: Math.ceil(PRICE_OF_SUB_TWOPAC),
       paintPrice: Math.ceil(PRICE_OF_PAINT),
+      paintRelatedCost: PAINT_RELATED_COST,
     },
+    
+    total: {
+      hingePrice: PRICE_OF_HINGES_LAMINATE + PRICE_OF_HINGES_TWOPAC,
+      handlePrice: PRICE_OF_HANDLES_LAMINATE + PRICE_OF_HANDLES_TWOPAC,
+      carcassPrice: PRICE_OF_CARCASS_LAMINATE + PRICE_OF_CARCASS_TWOPAC,
+      colorBoardPrice: PRICE_OF_COLORBOARD_LAMINATE + PRICE_OF_COLORBOARD_TWOPAC,
+      subPrice: PRICE_OF_SUB_LAMINATE + PRICE_OF_SUB_TWOPAC
+    },
+    
+  
+    assemblePrice: Math.ceil((NUMBER_OF_CABINETS_LAMINATE + NUMBER_OF_CABINETS_TWOPAC) * ASSEMBLE_PRICE_PER_CABINET),
+    installationPrice: Math.ceil((NUMBER_OF_CABINETS_LAMINATE + NUMBER_OF_CABINETS_TWOPAC) * INSTALLATION_PRICE_PER_CABINET),
+    deliveryPrice: DELIVERY_PRICE,
+    designPrice: DESIGN_PRICE,
+    
+    
     maintainenceCost: Math.ceil(MAINTAINENCE_COST_PERCENT * initialPrice),
     transportationCost: Math.ceil(TRANSPORTATION_COST_PERCENT),
     miscellaneousExpenses: Math.ceil(MISCELLANEOUS_EXPENSES_PERCENT * initialPrice),
@@ -319,7 +290,7 @@ function calculateBothPrice(laminate_length, laminate_towers, laminate_tower_wid
   return finalPrice;
 }
 
-function calculateIndividualPrice(length, towers, tower_width, drawers, isTwoPac) {
+function calculateIndividualPrice(length, drawers, isTwoPac) {
 
   let initialPrice = 0;
 
@@ -336,12 +307,15 @@ function calculateIndividualPrice(length, towers, tower_width, drawers, isTwoPac
   }
   const PRICE_OF_SUB = Math.ceil(SUB_PER_METER * length) * SUB_PRICE;
   const PRICE_OF_PAINT = Math.ceil(((length * COLORBOARD_PER_METER)*1.2) * BOARD_CUBIC_METER * PAINT_PRICE_PER_CUBIC_METER);
+  const PAINT_RELATED_COST = 400 + Math.ceil(PRICE_OF_PAINT * 0.3);
   let DELIVERY_PRICE;
   if (NUMBER_OF_CABINETS <= 20) {
     DELIVERY_PRICE = 400;
   } else {
     DELIVERY_PRICE = 700;
   }
+
+  
 
   initialPrice += PRICE_OF_CARCASS + PRICE_OF_COLORBOARD + PRICE_OF_HANDLES + PRICE_OF_HINGES + PRICE_OF_SUB + DELIVERY_PRICE +
     (NUMBER_OF_CABINETS * ASSEMBLE_PRICE_PER_CABINET) + (NUMBER_OF_CABINETS * INSTALLATION_PRICE_PER_CABINET) + DESIGN_PRICE + (drawers * DRAWER_PRICE);
@@ -352,7 +326,7 @@ function calculateIndividualPrice(length, towers, tower_width, drawers, isTwoPac
   let finalPrice;
 
   if (isTwoPac) {
-    finalPrice = PRICE_OF_PAINT + initialPrice + otherCosts;
+    finalPrice = PRICE_OF_PAINT + PAINT_RELATED_COST + initialPrice + otherCosts;
   } else {
     finalPrice = initialPrice + otherCosts;
   }
@@ -374,9 +348,12 @@ function calculateIndividualPrice(length, towers, tower_width, drawers, isTwoPac
     carcassPrice: Math.ceil(PRICE_OF_CARCASS),
     colorboardPrice: Math.ceil(PRICE_OF_COLORBOARD),
     subPrice: Math.ceil(PRICE_OF_SUB),
+    deliveryPrice: DELIVERY_PRICE,
+    designPrice: DESIGN_PRICE,
     assemblePrice: (NUMBER_OF_CABINETS * ASSEMBLE_PRICE_PER_CABINET),
     installationPrice: (NUMBER_OF_CABINETS * INSTALLATION_PRICE_PER_CABINET),
     paintPrice: Math.ceil(PRICE_OF_PAINT),
+    paintRelatedCost: PAINT_RELATED_COST, 
     maintainenceCost: Math.ceil(MAINTAINENCE_COST_PERCENT * initialPrice),
     transportationCost: Math.ceil(TRANSPORTATION_COST_PERCENT),
     miscellaneousExpenses: Math.ceil(MISCELLANEOUS_EXPENSES_PERCENT * initialPrice),
@@ -391,6 +368,7 @@ function calculateIndividualPrice(length, towers, tower_width, drawers, isTwoPac
 
 let isTwoPac = false;
 let showDetail = false;
+let accessoryPrices = 0;
 
 
 function showDetailsFunction() {
@@ -398,25 +376,31 @@ function showDetailsFunction() {
 
   if (priceDetails.laminate && priceDetails.twopac) {
 
-    detailsHtml = '<table><tr><th>Component</th><th>Laminate Number</th><th>Laminate</th><th>Twopac Number</th><th>Twopac</th></tr>';
+    detailsHtml = '<table><tr><th>Component</th><th>Laminate Number</th><th>Laminate</th><th>Twopac Number</th><th>Twopac</th><th>total Number</th><th>Total</th></tr>';
 
     detailsHtml += `
-      <tr><td>Cabinets</td><td>${numberDetails.laminate.cabinetNumber}</td><td></td><td>${numberDetails.twopac.cabinetNumber}</td><td></td></tr>
-      <tr><td>Hinges</td><td>${numberDetails.laminate.hingeNumber}</td><td>$${priceDetails.laminate.hingePrice}</td><td>${numberDetails.twopac.hingeNumber}</td><td>$${priceDetails.twopac.hingePrice}</td></tr>
-      <tr><td>Handles</td><td>${numberDetails.laminate.handleNumber}</td><td>$${priceDetails.laminate.handlePrice}</td><td>${numberDetails.twopac.handleNumber}</td><td>$${priceDetails.twopac.handlePrice}</td></tr>
-      <tr><td>Carcasses</td><td>${numberDetails.laminate.carcassNumber}</td><td>$${priceDetails.laminate.carcassPrice}</td><td>${numberDetails.twopac.carcassNumber}</td><td>$${priceDetails.twopac.carcassPrice}</td></tr>
-      <tr><td>Colorboards</td><td>${numberDetails.laminate.colorboardNumber}</td><td>$${priceDetails.laminate.colorboardPrice}</td><td>${numberDetails.twopac.satinboardNumber}</td><td>$${priceDetails.twopac.satinBoardPrice}</td></tr>
-      <tr><td>Subs</td><td>${numberDetails.laminate.subNumber}</td><td>$${priceDetails.laminate.subPrice}</td><td>${numberDetails.twopac.subNumber}</td><td>$${priceDetails.twopac.subPrice}</td></tr>
-      <tr><td>Assembly</td><td></td><td>$${priceDetails.laminate.assemblePrice}</td><td></td><td>$${priceDetails.twopac.assemblePrice}</td></tr>
-      <tr><td>Installation</td><td></td><td>$${priceDetails.laminate.installationPrice}</td><td></td><td>$${priceDetails.twopac.installationPrice}</td></tr>
-
+      <tr><td>Cabinets</td><td>${numberDetails.laminate.cabinetNumber}</td><td></td><td>${numberDetails.twopac.cabinetNumberTwopac}</td><td></td><td>${totalNumber.totalCabinetNumber}</td><td></td></tr>
+      <tr><td>Hinges</td><td>${numberDetails.laminate.hingeNumber}</td><td>$${priceDetails.laminate.hingePrice}</td><td>${numberDetails.twopac.hingeNumberTwopac}</td><td>$${priceDetails.twopac.hingePrice}</td><td>${totalNumber.totalHingeNumber}</td><td>$${priceDetails.total.hingePrice}</td></tr>
+      <tr><td>Handles</td><td>${numberDetails.laminate.handleNumber}</td><td>$${priceDetails.laminate.handlePrice}</td><td>${numberDetails.twopac.handleNumberTwopac}</td><td>$${priceDetails.twopac.handlePrice}</td><td>${totalNumber.totalHandleNumber}</td><td>$${priceDetails.total.handlePrice}</td></tr>
+      <tr><td>Carcasses</td><td>${numberDetails.laminate.carcassNumber}</td><td>$${priceDetails.laminate.carcassPrice}</td><td>${numberDetails.twopac.carcassNumberTwopac}</td><td>$${priceDetails.twopac.carcassPrice}</td><td>${totalNumber.totalCarcassNumber}</td><td>$${priceDetails.total.carcassPrice}</td></tr>
+      <tr><td>Color Boards/2pac Board</td><td>${numberDetails.laminate.colorboardNumber}</td><td>$${priceDetails.laminate.colorboardPrice}</td><td>${numberDetails.twopac.satinboardNumber}</td><td>$${priceDetails.twopac.satinBoardPrice}</td><td></td><td>$${priceDetails.total.colorBoardPrice}</td></tr>
+      <tr><td>Subs</td><td>${numberDetails.laminate.subNumber}</td><td>$${priceDetails.laminate.subPrice}</td><td>${numberDetails.twopac.subNumberTwopac}</td><td>$${priceDetails.twopac.subPrice}</td><td>${totalNumber.totalSubNumber}</td><td>$${priceDetails.total.subPrice}</td></tr>
       </table>
 
-      <h3>Initial Price: $${priceDetails.initialPrice}</h3>
+      <table><tr><th>Component</th><th>Price</th></tr>
+      <tr><td>Assembly</td><td>$${priceDetails.assemblePrice}</td></tr>
+      <tr><td>Installation</td><td>$${priceDetails.installationPrice}</td></tr>
+      <tr><td>Delivery</td><td>$${priceDetails.deliveryPrice}</td></tr>
+      <tr><td>Design</td><td>$${priceDetails.designPrice}</td></tr>
+      </table>
+      
+      
+      
+      <h1>Initial Price: $${priceDetails.initialPrice}</h1>
 
       <table><tr><th>Component</th><th>Cubic Meter</th><th>Price</th></tr>
       <tr><td>Paint Price</td><td>${numberDetails.twopac.satinboardCubicMeter}</td><td>$${priceDetails.twopac.paintPrice}</td></tr>
-
+      <tr><td>Paint Related Cost</td><td></td><td>$${priceDetails.twopac.paintRelatedCost}</td></tr>
 
 
       <table><tr><th>Expense</th><th>Cost</th></tr>
@@ -424,7 +408,9 @@ function showDetailsFunction() {
       <tr><td>Transportation</td><td>$${priceDetails.transportationCost}</td></tr>
       <tr><td>Miscellaneous</td><td>$${priceDetails.miscellaneousExpenses}</td></tr>
       <tr><td>Business</td><td>$${priceDetails.businessExpenses}</td></tr>
-      <tr><td>Profit</td><td>$${priceDetails.profit}</td></tr> </table>
+      <tr><td>Profit</td><td>$${priceDetails.profit}</td></tr>
+      ${(accessoryPrices > 0) ? '<tr><td>Extra Accessories Price</td><td>$' + accessoryPrices + '</td></tr>' : ''}
+      </table>
 
     `;
   }
@@ -434,17 +420,19 @@ function showDetailsFunction() {
 
     detailsHtml += `
       <tr><td>Cabinets</td><td>${numberDetails.melamineCarcass.cabinetNumber}</td><td></td></tr>
-      <tr><td>Hinges</td><td>${numberDetails.melamineCarcass.hingeNumber}</td><td>$${priceDetails.melamineCarcass.hingePrice}</td></tr>
-      <tr><td>Handles</td><td>${numberDetails.melamineCarcass.handleNumber}</td><td>$${priceDetails.melamineCarcass.handlePrice}</td></tr>
+      ${(numberDetails.melamineCarcass.hingeNumber>0) ? "<tr><td>Hinges</td><td>"+ numberDetails.melamineCarcass.hingeNumber +"</td><td>$"+priceDetails.melamineCarcass.hingePrice +"</td></tr>" : ''}
+      ${(numberDetails.melamineCarcass.handleNumber>0) ? "<tr><td>Handles</td><td>"+ numberDetails.melamineCarcass.handleNumber +"</td><td>$"+priceDetails.melamineCarcass.handlePrice +"</td></tr>" : ''}
       <tr><td>Carcasses</td><td>${numberDetails.melamineCarcass.carcassNumber}</td><td>$${priceDetails.melamineCarcass.carcassPrice}</td></tr>
-      <tr><td>Colorboard/Satinboard</td><td>${numberDetails.melamineCarcass.colorboardNumber}</td><td>$${priceDetails.melamineCarcass.colorboardPrice}</td></tr>
+      ${(numberDetails.melamineCarcass.colorboardNumber>0) ? "<tr><td>Colorboard/Satinboard</td><td>"+numberDetails.melamineCarcass.colorboardNumber +"</td><td>$"+priceDetails.melamineCarcass.colorboardPrice +"</td></tr>" : ''}
       <tr><td>Drawers</td><td>${numberDetails.melamineCarcass.drawerNumber}</td><td>$${priceDetails.melamineCarcass.drawerPrice}</td></tr>
-      <tr><td>Substrates</td><td>${numberDetails.melamineCarcass.subNumber}</td><td>$${priceDetails.melamineCarcass.subPrice}</td></tr>
+      ${(numberDetails.melamineCarcass.subNumber>0) ? "<tr><td>Substrates</td><td>"+numberDetails.melamineCarcass.subNumber +"</td><td>$"+priceDetails.melamineCarcass.subPrice +"</td></tr>" : ''}
+      <tr><td>Delivery</td><td></td><td>$${priceDetails.melamineCarcass.deliveryPrice}</td></tr>
+      <tr><td>Design</td><td></td><td>$${priceDetails.melamineCarcass.designPrice}</td></tr>
       <tr><td>Assembly</td><td></td><td>$${priceDetails.melamineCarcass.assemblePrice}</td></tr>
       <tr><td>Installation</td><td></td><td>$${priceDetails.melamineCarcass.installationPrice}</td></tr>
       </table>
 
-      <h3>Initial Price: $${priceDetails.melamineCarcass.initialPrice}</h3>
+      <h1>Initial Price: $${priceDetails.melamineCarcass.initialPrice}</h1>
 
 
       <table><tr><th>Expense</th><th>Cost</th></tr>
@@ -452,7 +440,9 @@ function showDetailsFunction() {
       <tr><td>Transportation</td><td>$${priceDetails.melamineCarcass.transportationCost}</td></tr>
       <tr><td>Miscellaneous</td><td>$${priceDetails.melamineCarcass.miscellaneousExpenses}</td></tr>
       <tr><td>Business</td><td>$${priceDetails.melamineCarcass.businessExpenses}</td></tr>
-      <tr><td>Profit</td><td>$${priceDetails.melamineCarcass.profit}</td></tr> </table>
+      <tr><td>Profit</td><td>$${priceDetails.melamineCarcass.profit}</td></tr>
+      ${(accessoryPrices > 0) ? '<tr><td>Extra Accessories Price</td><td>$' + accessoryPrices + '</td></tr>' : ''}
+      </table>
     `;
   }
   else 
@@ -467,13 +457,17 @@ function showDetailsFunction() {
       <tr><td>Carcasses</td><td>${numberDetails.carcassNumber}</td><td>$${priceDetails.carcassPrice}</td></tr>
       <tr><td>Colorboard/Satinboard</td><td>${numberDetails.colorboardNumber}</td><td>$${priceDetails.colorboardPrice}</td></tr>
       <tr><td>Subs</td><td>${numberDetails.subNumber}</td><td>$${priceDetails.subPrice}</td></tr>
+      <tr><td>Delivery</td><td></td><td>$${priceDetails.deliveryPrice}</td></tr>
+      <tr><td>Design</td><td></td><td>$${priceDetails.designPrice}</td></tr>
       <tr><td>Assembly</td><td></td><td>$${priceDetails.assemblePrice}</td></tr>
       <tr><td>Installation</td><td></td><td>$${priceDetails.installationPrice}</td></tr> </table>
 
-      <h3>Initial Price: $${priceDetails.initialPrice}</h3>
+      
+      
+      <h1>Initial Price: $${priceDetails.initialPrice}</h1>
 
 
-      ${(isTwoPac) ? "<table><tr><th>Component</th><th>Cubic Meter</th><th>Price</th></tr><tr><td>Paint Price</td><td>" + numberDetails.satinboardCubicMeter  + "</td><td>$" + priceDetails.paintPrice + "</td></tr>" : ""}
+      ${(isTwoPac) ? "<table><tr><th>Component</th><th>Cubic Meter</th><th>Price</th></tr><tr><td>Paint Price</td><td>" + numberDetails.satinboardCubicMeter  + "</td><td>$" + priceDetails.paintPrice + "</td></tr><tr><td>Paint Related Cost</td><td></td><td>$"+ priceDetails.paintRelatedCost +"</td></tr>" : ""}
 
 
       <table><tr><th>Expense</th><th>Cost</th></tr>
@@ -481,7 +475,9 @@ function showDetailsFunction() {
       <tr><td>Transportation</td><td>$${priceDetails.transportationCost}</td></tr>
       <tr><td>Miscellaneous</td><td>$${priceDetails.miscellaneousExpenses}</td></tr>
       <tr><td>Business</td><td>$${priceDetails.businessExpenses}</td></tr>
-      <tr><td>Profit</td><td>$${priceDetails.profit}</td></tr> </table>
+      <tr><td>Profit</td><td>$${priceDetails.profit}</td></tr>
+      ${(accessoryPrices > 0) ? '<tr><td>Extra Accessories Price</td><td>$' + accessoryPrices + '</td></tr>' : ''}
+      </table>
     `;
   }
   return detailsHtml;
@@ -491,8 +487,16 @@ function showDetailsFunction() {
 // Calculate price
 document.getElementById('calculate-price').addEventListener('click', () => {
 
+  accessoryPrices = 0;
+  let price = 0;
   const finish = document.getElementById('finishDropdown').value;
-  let price;
+  const accessoryPrice = document.getElementById('extra-accessories').value;
+  if (!(isNaN(accessoryPrice) || accessoryPrice == 0 || accessoryPrice == '0')) {
+    let numAccessoryPrice = parseInt(accessoryPrice)
+    price += numAccessoryPrice
+    accessoryPrices = numAccessoryPrice;
+  }
+
 
   if (finish == 'melamine-carcass') 
   {
@@ -504,6 +508,7 @@ document.getElementById('calculate-price').addEventListener('click', () => {
     let colorboard = document.getElementById('colorboard').value;
     let drawers = document.getElementById('melamine-drawers').value;
     let subDropdown = document.getElementById('melamine-sub-yes-no').value;
+        
     let hasSubs;
     if (subDropdown == 'sub-yes') 
     {
@@ -516,7 +521,7 @@ document.getElementById('calculate-price').addEventListener('click', () => {
 
     if (length == 0 || isNaN(length)) { alert("Please enter a valid length."); return; }
 
-    price = calculateMelaminePrice(length, hingeNumber, handleNumber, colorboard, drawers, hasSubs)
+    price += calculateMelaminePrice(length, hingeNumber, handleNumber, colorboard, drawers, hasSubs)
 
     if (showDetail) {
       detailsHtml = showDetailsFunction();
@@ -529,16 +534,11 @@ document.getElementById('calculate-price').addEventListener('click', () => {
     isTwoPac = false;
 
     let length = document.getElementById('length').value;
-    let towers = document.getElementById('towers').value;
-    let towerWidth;
-    if (towers > 0) {
-      towerWidth = document.getElementById('tower-width').value;
-    }
     let drawers = document.getElementById('drawers').value;
 
     if (length == 0 || isNaN(length)) { alert("Please enter a valid length."); return; }
 
-    price = calculateIndividualPrice(length, towers, towerWidth, drawers, false);
+    price += calculateIndividualPrice(length, drawers, false);
 
     if (showDetail) {
       detailsHtml = showDetailsFunction();
@@ -550,16 +550,11 @@ document.getElementById('calculate-price').addEventListener('click', () => {
     isTwoPac = true;
 
     let length = document.getElementById('length').value;
-    let towers = document.getElementById('towers').value;
-    let towerWidth;
-    if (towers > 0) {
-      towerWidth = document.getElementById('tower-width').value;
-    }
     let drawers = document.getElementById('drawers').value;
 
     if (length == 0 || isNaN(length)) { alert("Please enter a valid length."); return; }
 
-    price = calculateIndividualPrice(length, towers, towerWidth, drawers, true);
+    price += calculateIndividualPrice(length, drawers, true);
 
     if (showDetail) {
       detailsHtml = showDetailsFunction();
@@ -571,26 +566,16 @@ document.getElementById('calculate-price').addEventListener('click', () => {
     isTwoPac = true;
 
     let laminate_length = document.getElementById('laminate-length').value;
-    let laminate_towers = document.getElementById('laminate-towers').value;
-    let laminate_tower_width;
-    if (laminate_towers > 0) {
-      laminate_tower_width = document.getElementById('laminate-tower-width').value;
-    }
     let laminate_drawers = document.getElementById('laminate-drawers').value;
 
     let twopac_length = document.getElementById('twopac-length').value;
-    let twopac_towers = document.getElementById('twopac-towers').value;
-    let twopac_tower_width;
-    if (twopac_towers > 0) {
-      twopac_tower_width = document.getElementById('twopac-tower-width').value;
-    }
     let twopac_drawers = document.getElementById('twopac-drawers').value;
 
     if (laminate_length == 0 || isNaN(laminate_length) || twopac_length == 0 || isNaN(twopac_length)) { alert("Please enter a valid length."); return; }
 
 
-    price = calculateBothPrice(laminate_length, laminate_towers, laminate_tower_width, laminate_drawers,
-      twopac_length, twopac_towers, twopac_tower_width, twopac_drawers
+    price += calculateBothPrice(laminate_length, laminate_drawers,
+      twopac_length, twopac_drawers
     );
 
     if (showDetail) {
@@ -607,11 +592,7 @@ document.getElementById('calculate-price').addEventListener('click', () => {
 });
 
 
-{/* <tr><td>Maintainence</td><td></td><td></td><td></td><td></td><td>$${priceDetails.maintainenceCost}</td></tr>
-<tr><td>Transportation</td><td></td><td></td><td></td><td></td><td>$${priceDetails.transportationCost}</td></tr>
-<tr><td>Miscellaneous</td><td></td><td></td><td></td><td></td><td>$${priceDetails.miscellaneousExpenses}</td></tr>
-<tr><td>Business</td><td></td><td></td><td></td><td></td><td>$${priceDetails.businessExpenses}</td></tr>
-<tr><td>Profit</td><td></td><td></td><td></td><td></td><td>${priceDetails.profit}</td></tr> */}
+
 
 
 document.getElementById('priceDetails').addEventListener('click', () => {
@@ -626,4 +607,3 @@ document.getElementById('priceDetails').addEventListener('click', () => {
 document.getElementById('priceDetails').style.display = 'none';
 
 
-// <tr><td>NUMBER OF CABINETS</td><td>${priceDetails.laminate.NUMBER_OF_CABINETS}</td><td>${priceDetails.twopac.NUMBER_OF_CABINETS}</td></tr>
