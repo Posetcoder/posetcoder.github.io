@@ -543,7 +543,7 @@ function calculateLaminatePrice(length, drawers, laminateType) {
   }
 
   const PRICE_OF_SUB = Math.ceil(SUB_PER_METER * length) * SUB_PRICE;
-  const PRICE_OF_PAINT = Math.ceil(((length * COLORBOARD_PER_METER)*1.2) * BOARD_CUBIC_METER * PAINT_PRICE_PER_CUBIC_METER);
+  const PRICE_OF_PAINT = Math.ceil(((length * COLORBOARD_PER_METER)*1.2) * BOARD_CUBIC_METER * MATT_PAINT_PRICE_PER_CUBIC_METER);
   const PAINT_RELATED_COST = 400 + Math.ceil(PRICE_OF_PAINT * 0.3);
   let DELIVERY_PRICE;
   if (NUMBER_OF_CABINETS <= 20) {
